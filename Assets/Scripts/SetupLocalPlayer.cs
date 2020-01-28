@@ -31,6 +31,9 @@ public class SetupLocalPlayer : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        Vector3 nameLabelPos =
+            Camera.main.WorldToScreenPoint(namePosition.position);
+        NameLabel.transform.position = nameLabelPos;
         
     }
 }
