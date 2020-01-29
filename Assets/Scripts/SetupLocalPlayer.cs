@@ -12,9 +12,9 @@ public class SetupLocalPlayer : NetworkBehaviour
     string color = "";
     public Transform namePosition;
     [SyncVar(hook = "OnChangeName")]
-    public string pName = "Player";
+     string pName = "Player";
     [SyncVar(hook = "OnChangeColor")]
-    public string pColor = "#ffffff";
+     string pColor = "ffffff";
         
     void OnChangeName(string n)
     {
