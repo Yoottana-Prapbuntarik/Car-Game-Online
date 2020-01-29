@@ -9,6 +9,15 @@ public class SetupLocalPlayer : NetworkBehaviour
     public Text NamePrefab;
     private Text NameLabel;
     public Transform namePosition;
+    public string pName = "Player";
+    private void OnGUI()
+    {
+        if (isLocalPlayer)
+        {
+            pName = GUI.TextField(new Rect(25, 15, 100, 25), pName);
+            NameLabel.text = pName;
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
