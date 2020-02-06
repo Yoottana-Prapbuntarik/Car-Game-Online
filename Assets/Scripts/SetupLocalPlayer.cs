@@ -8,14 +8,30 @@ public class SetupLocalPlayer : NetworkBehaviour
 {
     public Text NamePrefab;
     private Text NameLabel;
+    public Text Chat;
+    int offsetY = 1;
     string textboxName = "";
     string color = "";
+    string currentTextChat = "";
+
+    List<string> chatHistory = new List<string>();
     public Transform namePosition;
     [SyncVar(hook = "OnChangeName")]
      string pName = "Player";
     [SyncVar(hook = "OnChangeColor")]
      string pColor = "ffffff";
-        
+    [SyncVar(hook = "OnChangeNextMsg")]
+     string HistoryText = "";
+
+    void OnChangeNextMsg(string newMsg)
+    {
+        HistoryText = newMsg;
+        chatHistory.Add(HistoryText);
+        foreach (string items in chatHistory)
+        {
+            Chat.text += items;
+        }
+    }
     void OnChangeName(string n)
     {
         pName = n;
@@ -57,12 +73,24 @@ public class SetupLocalPlayer : NetworkBehaviour
             {
                 CmdChangeName(textboxName);
             }
-            color = GUI.TextField(new Rect(200, 50, 100, 25), color);
-            if (GUI.Button(new Rect(300, 50, 35, 35), "Set"))
+            color = GUI.TextField(new Rect(350, 15, 100, 25), color);
+            if (GUI.Button(new Rect(450, 15, 35, 35), "Set"))
             {
                 CmdOnChangeColor(color);
             }
+            //input
+            currentTextChat = GUI.TextField(new Rect(25, 500, 100, 25), currentTextChat);
+            if (GUI.Button(new Rect(200, 500, 35, 35), "send"))
+            {
+                CmdOnChat(currentTextChat);
+
+            }
         }
+    }
+    [Command]
+    public void CmdOnChat(string text)
+    {
+        HistoryText = text;
     }
     [Command]
     public void CmdChangeName(string name)
@@ -92,14 +120,18 @@ public class SetupLocalPlayer : NetworkBehaviour
         NameLabel = Instantiate(NamePrefab, Vector3.zero, Quaternion.identity) as Text;
         //transform follow canvas 
         NameLabel.transform.SetParent(canvas.transform);
+        GameObject canvasChat = GameObject.FindWithTag("chatCanvas");
+        Chat = Instantiate(Chat, new Vector3(300,20,0), Quaternion.identity) as Text;
+        //transform follow canvas 
+        Chat.transform.SetParent(canvasChat.transform);
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 nameLabelPos =
+         Vector3 nameLabelPos =
             Camera.main.WorldToScreenPoint(namePosition.position);
         NameLabel.transform.position = nameLabelPos;
-
     }
 }

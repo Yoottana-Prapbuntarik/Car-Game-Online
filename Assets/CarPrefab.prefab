@@ -388,6 +388,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NamePrefab: {fileID: 9032931741171774267, guid: 4011f4d7bc2fb564d94e8d0b63f12f18,
     type: 3}
+  Chat: {fileID: 1977955025763948739, guid: c754fbbf3e13c7840a3bc6b29ca16c20, type: 3}
   namePosition: {fileID: 4465426558401912923}
 --- !u!1 &1000013231073728
 GameObject:
