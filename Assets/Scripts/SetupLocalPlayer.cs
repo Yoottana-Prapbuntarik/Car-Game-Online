@@ -17,11 +17,11 @@ public class SetupLocalPlayer : NetworkBehaviour
     List<string> chatHistory = new List<string>();
     public Transform namePosition;
     [SyncVar(hook = "OnChangeName")]
-     string pName = "Player";
+    string pName = "Player";
     [SyncVar(hook = "OnChangeColor")]
-     string pColor = "ffffff";
+    string pColor = "ffffff";
     [SyncVar(hook = "OnChangeNextMsg")]
-     string HistoryText = "";
+    string HistoryText = "";
 
     void OnChangeNextMsg(string newMsg)
     {
@@ -121,17 +121,54 @@ public class SetupLocalPlayer : NetworkBehaviour
         //transform follow canvas 
         NameLabel.transform.SetParent(canvas.transform);
         GameObject canvasChat = GameObject.FindWithTag("chatCanvas");
-        Chat = Instantiate(Chat, new Vector3(300,20,0), Quaternion.identity) as Text;
+        Chat = Instantiate(Chat, new Vector3(300, 20, 0), Quaternion.identity) as Text;
         //transform follow canvas 
         Chat.transform.SetParent(canvasChat.transform);
 
     }
+    public void OnDestroy()
+    {
+        if (NameLabel != null)
+        {
+            Destroy(NameLabel.gameObject);
+        }
+    }
 
+    //After at start get current Name
+    public override void OnStartClient()
+    {
+        //call old coding original 
+        base.OnStartClient();
+        Invoke("UpdatesState", 1);
+    }
+    void UpdatesState()
+    {
+        OnChangeName(pName);
+        OnChangeColor(pColor);
+
+    }
     // Update is called once per frame
     void Update()
     {
-         Vector3 nameLabelPos =
+        /*  Vector3 nameLabelPos =
             Camera.main.WorldToScreenPoint(namePosition.position);
-        NameLabel.transform.position = nameLabelPos;
+            NameLabel.transform.position = nameLabelPos;
+        */
+        Vector3 screenPoint = Camera.main.WorldToViewportPoint(this.transform.position);
+        bool onScreen = screenPoint.z > 0 && screenPoint.x > 0 &&
+                        screenPoint.x < 1 && screenPoint.y > 0 &&
+                        screenPoint.y < 1;
+        if (onScreen)
+        {
+            Vector3 nameLabelPos =
+            Camera.main.WorldToScreenPoint(namePosition.position);
+            NameLabel.transform.position = nameLabelPos;
+
+        }
+        else
+        {
+            NameLabel.transform.position = new Vector3(-1000, -1000, 0);
+        }
+
     }
 }
